@@ -1,6 +1,5 @@
 import React from "react";
-import { useField } from "formik";
-import { Form, Label } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
 import { Field } from "react-final-form";
 
 import "./FieldTextInput.scss";
@@ -14,7 +13,6 @@ type FieldTextInputProps = {
 };
 
 const FieldTextInput: React.FC<FieldTextInputProps> = (props) => {
-  // const [field,meta] = useField(props.name);
   const { placeholder, name, type, label, validate } = props;
   return (
     <Field
@@ -29,14 +27,7 @@ const FieldTextInput: React.FC<FieldTextInputProps> = (props) => {
         </Form.Field>
       )}
       validate={validate}
-    ></Field>
-    // <Form.Field error={meta.touched && !!meta.error}>
-    //     <label>{props.label}</label>
-    //     <input {...field} {...props} />
-    //     {meta.touched && meta.error?(
-    //         <Label basic color='red'>{meta.error}</Label>
-    //     ):null}
-    // </Form.Field>
+    />
   );
 };
 

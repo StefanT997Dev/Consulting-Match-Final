@@ -32,4 +32,16 @@ export default class UserStore{
         this.user=null;
         history.push('/');
     }
+
+    register = async(creds: UserFormValues) => {
+      try {
+        const user = await agent.Account.register(creds);
+        console.log('register', user);
+        store.commonStore.setToken(user.token);
+        runInAction(()=>this.user=user);
+        history.push('/consultants');
+      }catch(error) {
+        throw error;
+      }
+    }
 }

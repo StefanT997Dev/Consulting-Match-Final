@@ -1,0 +1,43 @@
+@import "../../scss/color";
+
+.register-form {
+  margin-top: 2rem !important;
+  &__form {
+    padding: 2rem;
+    background-color: #f9fafb;
+    border-top: 1rem solid $color-primary;
+    box-shadow: 0 0.25rem 0.875rem 0 rgb(0 0 0 / 8%);
+    border-radius: 1rem;
+    max-width: 400px;
+    margin: auto;
+
+    &__grouped-items {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    &__label {
+      text-align: left;
+      display: block;
+      margin: 0 0 0.28571429rem 0;
+      color: rgba(0, 0, 0, 0.87);
+      font-size: 0.92857143em;
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    &__termsAndConditions {
+      margin-bottom: 2rem;
+    }
+
+    &__error {
+      color: red;
+      font-size: 1rem;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+  }
+}
