@@ -7,6 +7,7 @@ import { Review } from '../models/review';
 import { UserFormValues } from '../models/user';
 import { toast } from 'react-toastify';
 import { history } from '..';
+import { request } from 'http';
 
 axios.defaults.baseURL='http://localhost:5000';
 
@@ -72,7 +73,8 @@ const Consultants={
 }
 
 const Categories={
-    list:()=>requests.get('/categories')
+    list:()=>requests.get('/categories'),
+    add:(id: string, name: string)=>requests.post('/categories',{id,name}),
 }
 
 const Messages={

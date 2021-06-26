@@ -19,6 +19,7 @@ export default class UserStore{
         try{
             const user=await agent.Account.login(creds);
             store.commonStore.setToken(user.token);
+            store.commonStore.setUser(user);
             runInAction(()=>this.user=user);
             history.push('/consultants');
         }catch(error){
@@ -38,8 +39,8 @@ export default class UserStore{
         const user = await agent.Account.register(creds);
         console.log('register', user);
         store.commonStore.setToken(user.token);
+        store.commonStore.setUser(user);
         runInAction(()=>this.user=user);
-        history.push('/consultants');
       }catch(error) {
         throw error;
       }

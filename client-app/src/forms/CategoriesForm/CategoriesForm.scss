@@ -1,6 +1,6 @@
 @import "../../scss/color";
 
-.register-form {
+.categories-form {
   margin-top: 2rem !important;
   &__form {
     padding: 2rem;
@@ -19,24 +19,10 @@
       margin-bottom: 1rem;
     }
 
-    &__label {
-      text-align: left;
-      display: block;
-      margin: 0 0 0.28571429rem 0;
-      color: rgba(0, 0, 0, 0.87);
-      font-size: 0.92857143em;
-      font-weight: 700;
-      text-transform: none;
-    }
-
     &__inline-button-container {
       display: flex;
       justify-content: left;
       margin: 1rem 0;
-    }
-
-    &__termsAndConditions {
-      margin-bottom: 2rem;
     }
 
     &__error {
