@@ -1,7 +1,8 @@
 export interface User{
-    username:string;
+    id?: string,
+    username?:string;
     displayName:string;
-    token:string;
+    token?:string;
     image?:string;
 }
 

@@ -53,19 +53,19 @@ const responseBody=(response:AxiosResponse) => response.data.value;
 const responseBodyForPost=(response:AxiosResponse) => response.data;
 
 const requests = {
-    get:(url:string) => axios.get(url).then(responseBody),
+    get:(url:string, body:{}) => axios.get(url,body).then(responseBody),
     post:(url:string,body:{}) => axios.post(url,body).then(responseBodyForPost),
     put:(url:string,body:{}) => axios.put(url,body).then(responseBody),
-    del:(url:string) => axios.delete(url).then(responseBody)
+    del:(url:string,body:{}) => axios.delete(url,body).then(responseBody)
 }
 
 const Consultants={
-    list:()=>requests.get('/consultants'),
+    list:()=>requests.get('/consultants',{}),
     postAReview:(selectedConsultant:Consultant | undefined,review:Review | undefined)=>
         requests.post("/consultants/"+selectedConsultant?.id+"/reviews",{starRating:review?.starRating,comment:review?.comment}),
-    getListOfReviews:(currentConsultant:Consultant|undefined) => requests.get("/consultants/"+currentConsultant?.id+"/reviews"),
-    listForSelectedCategory:(selectedCategory:Category | undefined | null)=>requests.get("/categories/"+selectedCategory?.id+"/consultants"),
-    getListOfPosts:(consultant:Consultant | undefined)=>requests.get("/consultants/"+consultant?.id+"/posts"),
+    getListOfReviews:(currentConsultant:Consultant|undefined) => requests.get("/consultants/"+currentConsultant?.id+"/reviews",{}),
+    listForSelectedCategory:(selectedCategory:Category | undefined | null)=>requests.get("/categories/"+selectedCategory?.id+"/consultants",{}),
+    getListOfPosts:(consultant:Consultant | undefined)=>requests.get("/consultants/"+consultant?.id+"/posts",{}),
     submitAPost:(consultant:Consultant | undefined,post:Post | undefined)=>
         requests.post("/consultants/"+consultant?.id+"/posts",{id:post?.id,title:post?.title,description:post?.description}),
     search:(consultantName:string | undefined)=>requests.post("/consultants",{description:consultantName})
@@ -73,7 +73,7 @@ const Consultants={
 }
 
 const Categories={
-    list:()=>requests.get('/categories'),
+    list:()=>requests.get('/categories',{}),
     add:(id: string, name: string)=>requests.post('/categories',{id,name}),
 }
 
@@ -82,16 +82,22 @@ const Messages={
 }
 
 const Account={
-    current: ()=>requests.get('/account'),
+    current: ()=>requests.get('/account',{}),
     login: (user:UserFormValues) => requests.post('/account/login',user),
     register:(user:UserFormValues)=>requests.post('/account/register',user)
+}
+
+const Admin={
+    usersPaginated: (PageNumber: number,PageSize: number) =>axios.get(`/users?PageNumber=${PageNumber}&PageSize=${PageSize}`),
+    deleteUser: (email: string) => requests.del('/admin',{email}),
 }
 
 const agent={
     Consultants,
     Categories,
     Messages,
-    Account
+    Account,
+    Admin
 }
 
 export default agent;
