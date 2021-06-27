@@ -65,7 +65,7 @@ const AdminPanelPage: React.FC<AdminPanelPageProps> = (props) => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [currentPage]);
 
   //TODO: don't have email of user in the users list
   //need email so user can be deleted
