@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Persistence;
 
 namespace API.Controllers
 {
@@ -18,8 +21,10 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly TokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
+        private readonly DataContext _context;
+        public AccountController(DataContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
         {
+            _context = context;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -52,42 +57,54 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if(await _userManager.Users.AnyAsync(x=> x.Email==registerDto.Email))
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
             {
                 return BadRequest("Email taken");
             }
 
-            if(await _userManager.Users.AnyAsync(x=> x.UserName==registerDto.Username))
+            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
             {
                 return BadRequest("Username taken");
             }
 
-            var user=new AppUser
+            var user = new AppUser
             {
-                DisplayName=registerDto.DisplayName,
-                Email=registerDto.Email,
-                UserName=registerDto.Username
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                UserName = registerDto.Username
             };
 
-            var result = await _userManager.CreateAsync(user,registerDto.Password);
-
-            if(result.Succeeded)
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
-                var addRoleResult = await _userManager.AddToRoleAsync(user,registerDto.Role);
-
-                if(!addRoleResult.Succeeded)
+                try
                 {
-                    return BadRequest("Role does not exist or user hasn't selected the role");
+                    var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+                    if (result.Succeeded)
+                    {
+                        var addRoleResult = await _userManager.AddToRoleAsync(user, registerDto.Role);
+
+                        if (!addRoleResult.Succeeded)
+                        {
+                            return BadRequest("Role does not exist or user hasn't selected the role");
+                        }
+                    }
+
+                    transaction.Commit();
+
+                    return new UserDto
+                    {
+                        DisplayName = user.DisplayName,
+                        Image = null,
+                        Token = _tokenService.CreateToken(user),
+                        Username = user.UserName,
+                        Role = registerDto.Role
+                    };
                 }
-
-                return new UserDto
+                catch (Exception)
                 {
-                    DisplayName=user.DisplayName,
-                    Image=null,
-                    Token=_tokenService.CreateToken(user),
-                    Username=user.UserName,
-                    Role=registerDto.Role
-                };
+                    transaction.Rollback();
+                }
             }
 
             return BadRequest("Problem registering user");
