@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.DTOs;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -14,7 +15,7 @@ namespace Application.Skills
         public class Command : IRequest<Result<Unit>>
         {
             public Guid CategoryId { get; set; }
-            public Skill Skill { get; set; }
+            public SkillDto Skill { get; set; }
         }
         public class Hadler : IRequestHandler<Command, Result<Unit>>
         {
@@ -30,7 +31,13 @@ namespace Application.Skills
             {
                 var category = await _context.Categories.FindAsync(request.CategoryId);
 
-                _context.Skills.Add(request.Skill);
+                var skill = new Skill
+                {
+                    Id=request.Skill.Id,
+                    Name=request.Skill.Name
+                };
+
+                _context.Skills.Add(skill);
 
                 category.Skills.Add(_mapper.Map<CategorySkill>(request.Skill));
 

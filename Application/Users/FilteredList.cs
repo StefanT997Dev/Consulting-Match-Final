@@ -39,14 +39,14 @@ namespace Application.Users
 
                 var listOfUserDtos = new List<UserDto>();
 
+                var totalRecords = await _context.Users.CountAsync();
+
                 foreach(var user in users)
                 {
                     listOfUserDtos.Add(_mapper.Map<UserDto>(user));
                 }
 
-                int totalRecords=listOfUserDtos.Count;
-
-                int numberOfPages = totalRecords/10+1;
+                int numberOfPages = request.PageSize>totalRecords?totalRecords/request.PageSize+1:totalRecords/request.PageSize;
 
                 return PagedResult<List<UserDto>>.Success(listOfUserDtos,numberOfPages,totalRecords);
             }

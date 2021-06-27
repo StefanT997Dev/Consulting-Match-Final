@@ -4,6 +4,7 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.Skills;
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -11,7 +12,7 @@ namespace API.Controllers
     {
         [AllowAnonymous]
         [HttpPost("{categoryId}")]
-        public async Task<IActionResult> Add(Guid categoryId,Skill skill)
+        public async Task<IActionResult> Add(Guid categoryId,SkillDto skill)
         {
             return Ok(await Mediator.Send(new Create.Command{CategoryId=categoryId,Skill=skill}));
         }

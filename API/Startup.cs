@@ -80,6 +80,7 @@ namespace API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<MessageHub>("/message");
             });
         }
     }
