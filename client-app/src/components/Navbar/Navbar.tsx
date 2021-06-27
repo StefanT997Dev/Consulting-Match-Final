@@ -52,10 +52,17 @@ export default observer(function Navbar() {
             Home
           </Menu.Item>
           <Menu.Item header as={NavLink} to="/authentication" exact>
-            <img src="/assets/logo.png" alt="logo" />
+            {/* <img src="/assets/logo.png" alt="logo" /> */}
             ConsultingMatch
           </Menu.Item>
-          <Menu.Item name="Feed" as={NavLink} to="/feed" />
+          <Menu.Item
+            //TODO: need to protect this route if user is not admin
+            as={NavLink}
+            to="/manage"
+          >
+            Admin panel
+          </Menu.Item>
+          {/* <Menu.Item name="Feed" as={NavLink} to="/feed" /> */}
           <Menu.Item as={NavLink} to="/profile">
             <Button positive content="Profile" />
           </Menu.Item>
@@ -74,18 +81,18 @@ export default observer(function Navbar() {
               </Grid.Column>
             </Grid>
           </Menu.Item>
-          <Menu.Item name="Errors" as={NavLink} to="/errors" />
-          <Menu.Item position="right">
+          {/* <Menu.Item name="Errors" as={NavLink} to="/errors" /> */}
+          {/* <Menu.Item position="right">
             <Image
               src={user?.image || "/images/homersimpson.0.0.jpg"}
               avatar
               spaced="right"
             />
-          </Menu.Item>
+          </Menu.Item> */}
         </Container>
       </Menu>
 
-      <Menu
+      {/* <Menu
         style={{ marginTop: "1px", marginBottom: "0px" }}
         inverted
         widths={categories.length as SemanticWIDTHS}
@@ -104,7 +111,7 @@ export default observer(function Navbar() {
             }}
           />
         ))}
-      </Menu>
+      </Menu> */}
     </div>
   );
 });

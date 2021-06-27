@@ -15,6 +15,14 @@ export default class UserStore{
         return !!this.user;
     }
 
+    getUsersPaginated=async(PageNumber: number, PageSize: number)=>{
+      return await agent.Admin.usersPaginated(PageNumber, PageSize);
+    }
+
+    deleteUser=async(email: string)=>{
+      return await agent.Admin.deleteUser(email);
+    }
+
     login = async(creds:UserFormValues)=>{
         try{
             const user=await agent.Account.login(creds);
