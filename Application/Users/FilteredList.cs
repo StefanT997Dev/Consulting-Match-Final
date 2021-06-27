@@ -46,7 +46,21 @@ namespace Application.Users
                     listOfUserDtos.Add(_mapper.Map<UserDto>(user));
                 }
 
-                int numberOfPages = request.PageSize>totalRecords?totalRecords/request.PageSize+1:totalRecords/request.PageSize;
+                int numberOfPages =0;
+
+                if(request.PageSize>totalRecords)
+                {
+                    numberOfPages=1;
+                }
+                else if(totalRecords%request.PageSize!=0)
+                {
+                    numberOfPages=totalRecords/request.PageSize+1;  
+                }
+                else
+                {
+                    numberOfPages=totalRecords/request.PageSize;
+                }
+            
 
                 return PagedResult<List<UserDto>>.Success(listOfUserDtos,numberOfPages,totalRecords);
             }

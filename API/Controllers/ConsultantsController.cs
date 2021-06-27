@@ -31,7 +31,7 @@ namespace API.Controllers
             return HandleResultForLists(await Mediator.Send(new Application.Reviews.List.Query{Id=id}));
         }
         
-        [AllowAnonymous]
+        [Authorize(Roles ="Client")]
         [HttpPost("{id}/reviews")]
         public async Task<IActionResult> PostReview(string id,ReviewDto review)
         {
