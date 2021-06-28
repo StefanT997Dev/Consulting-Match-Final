@@ -89,7 +89,7 @@ const Account={
 
 const Admin={
     usersPaginated: (PageNumber: number,PageSize: number) =>axios.get(`/users?PageNumber=${PageNumber}&PageSize=${PageSize}`),
-    deleteUser: (email: string) => requests.del('/admin',{email}),
+    deleteUser: (email: string | undefined) => requests.del('/admin',{email}),
 }
 
 const agent={
