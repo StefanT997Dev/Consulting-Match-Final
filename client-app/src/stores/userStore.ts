@@ -38,6 +38,7 @@ export default class UserStore{
     logout=()=>{
         store.commonStore.setToken(null);
         window.localStorage.removeItem('jwt');
+        window.localStorage.removeItem('user');
         this.user=null;
         history.push('/');
     }
