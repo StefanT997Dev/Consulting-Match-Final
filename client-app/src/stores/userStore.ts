@@ -19,7 +19,7 @@ export default class UserStore{
       return await agent.Admin.usersPaginated(PageNumber, PageSize);
     }
 
-    deleteUser=async(email: string)=>{
+    deleteUser=async(email: string | undefined)=>{
       return await agent.Admin.deleteUser(email);
     }
 
@@ -38,6 +38,7 @@ export default class UserStore{
     logout=()=>{
         store.commonStore.setToken(null);
         window.localStorage.removeItem('jwt');
+        window.localStorage.removeItem('user');
         this.user=null;
         history.push('/');
     }

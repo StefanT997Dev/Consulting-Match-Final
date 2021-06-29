@@ -1,37 +1,57 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { history } from "../../";
 import {
   Button,
   Container,
   Menu,
-  Image,
+  Sidebar,
   Grid,
+  Icon,
   Search,
+  Segment,
   SearchProps,
 } from "semantic-ui-react";
-import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
 import agent from "../../api/agent";
+import { MAX_MOBILE_SCREEN_WIDTH } from "../../constants";
+import { isEmptyObject } from "../../util/data";
 import { Category } from "../../models/category";
 import { useStore } from "../../stores/store";
 
+import "./Navbar.scss";
+
 export default observer(function Navbar() {
-  const activeColor = "blue";
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const isLoggedIn = !isEmptyObject(currentUser);
+  const isAdmin = currentUser ? currentUser.role === "admin" : false;
 
   const { consultantStore } = useStore();
-  const { categoryStore } = useStore();
   const {
-    userStore: { user },
+    userStore: { user, logout },
   } = useStore();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchedName, setSearchedName] = useState<string | undefined>("");
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
   useEffect(() => {
     agent.Categories.list().then((response) => {
       setCategories(response);
     });
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+      if (window.innerWidth > MAX_MOBILE_SCREEN_WIDTH) setSidebarVisible(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleSearchChange = (
@@ -44,74 +64,86 @@ export default observer(function Navbar() {
     consultantStore.filterConsultants(data.value);
   };
 
+  const tabs = (
+    <React.Fragment>
+      <Menu.Item as={NavLink} to="/" exact>
+        Home
+      </Menu.Item>
+      {!isLoggedIn ? (
+        <Menu.Item header as={NavLink} to="/authentication" exact>
+          ConsultingMatch
+        </Menu.Item>
+      ) : null}
+      {isAdmin && (
+        <Menu.Item as={NavLink} to="/manage">
+          Admin panel
+        </Menu.Item>
+      )}
+      {/* <Menu.Item name="Feed" as={NavLink} to="/feed" /> */}
+      <Menu.Item as={NavLink} to="/profile" exact>
+        Profile
+      </Menu.Item>
+      {/* <Menu.Item style={{ width: "45em" }}>
+        <Grid>
+          <Grid.Column width={8}>
+            <Search
+              fluid
+              input={{ fluid: true }}
+              style={{ width: "600px" }}
+              loading={isLoading}
+              onSearchChange={handleSearchChange}
+              results={consultantStore.filteredConsultants}
+              value={searchedName}
+            />
+          </Grid.Column>
+        </Grid>
+      </Menu.Item> */}
+      {isLoggedIn && (
+        <Menu.Item
+          onClick={() => {
+            logout();
+            // history.push("/");
+            history.replace("/");
+          }}
+          position="right"
+        >
+          Logout
+        </Menu.Item>
+      )}
+    </React.Fragment>
+  );
+
+  console.log("tabs", tabs);
+
   return (
     <div>
-      <Menu style={{ marginTop: "0px", marginBottom: "0px" }} inverted>
-        <Container>
-          <Menu.Item as={NavLink} to="/" exact>
-            Home
-          </Menu.Item>
-          <Menu.Item header as={NavLink} to="/authentication" exact>
-            {/* <img src="/assets/logo.png" alt="logo" /> */}
-            ConsultingMatch
-          </Menu.Item>
-          <Menu.Item
-            //TODO: need to protect this route if user is not admin
-            as={NavLink}
-            to="/manage"
-          >
-            Admin panel
-          </Menu.Item>
-          {/* <Menu.Item name="Feed" as={NavLink} to="/feed" /> */}
-          <Menu.Item as={NavLink} to="/profile">
-            <Button positive content="Profile" />
-          </Menu.Item>
-          <Menu.Item style={{ width: "45em" }}>
-            <Grid>
-              <Grid.Column width={8}>
-                <Search
-                  fluid
-                  input={{ fluid: true }}
-                  style={{ width: "600px" }}
-                  loading={isLoading}
-                  onSearchChange={handleSearchChange}
-                  results={consultantStore.filteredConsultants}
-                  value={searchedName}
-                />
-              </Grid.Column>
-            </Grid>
-          </Menu.Item>
-          {/* <Menu.Item name="Errors" as={NavLink} to="/errors" /> */}
-          {/* <Menu.Item position="right">
-            <Image
-              src={user?.image || "/images/homersimpson.0.0.jpg"}
-              avatar
-              spaced="right"
-            />
-          </Menu.Item> */}
-        </Container>
-      </Menu>
-
-      {/* <Menu
-        style={{ marginTop: "1px", marginBottom: "0px" }}
-        inverted
-        widths={categories.length as SemanticWIDTHS}
-      >
-        {categories.map((category) => (
-          <Menu.Item
-            key={category.id}
-            name={category.name}
-            active={categoryStore.activeCategoryName === category.name}
-            color={activeColor}
-            onClick={(event, data) => {
-              categoryStore.handleActiveCategoryName(event, data);
-              consultantStore.loadConsultantsForSelectedCategory(
-                categoryStore.activeCategoryName
-              );
-            }}
+      {width > MAX_MOBILE_SCREEN_WIDTH ? (
+        <Menu
+          className="navbar"
+          style={{ marginTop: "0px", marginBottom: "0px" }}
+          inverted
+        >
+          {tabs}
+        </Menu>
+      ) : (
+        <Segment className="navbar" inverted size="tiny">
+          <Icon
+            size="big"
+            name="sidebar"
+            onClick={() => setSidebarVisible(true)}
           />
-        ))}
-      </Menu> */}
+          <Sidebar
+            inverted
+            as={Menu}
+            width="thin"
+            vertical
+            visible={sidebarVisible}
+            onHinde={() => setSidebarVisible(false)}
+          >
+            {tabs}
+          </Sidebar>
+        </Segment>
+      )}
     </div>
   );
 });
