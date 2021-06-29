@@ -31,9 +31,9 @@ namespace API.Controllers
             return HandleResultForLists(await Mediator.Send(new Application.Reviews.List.Query{Id=id}));
         }
         
-        [Authorize(Roles ="Client")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Client")]
         [HttpPost("{id}/reviews")]
-        public async Task<IActionResult> PostReview(string id,ReviewDto review)
+        public async Task<IActionResult> PostReview([FromRoute]string id,[FromBody]ReviewDto review)
         {
             return Ok(await Mediator.Send(new Application.Reviews.Create.Command{Id=id,Review=review}));
         }

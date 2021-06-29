@@ -18,6 +18,11 @@ namespace Application
             var appUserCategory = _context.AppUserCategories
                         .Where(ac => ac.AppUserId == user.Id)
                         .FirstOrDefault();
+            
+            if(appUserCategory==null)
+            {
+                return new List<string>(){"No category has been chosen yet"};
+            }
 
             var categories = await _context.Categories.Where(c => c.Id == appUserCategory.CategoryId).ToListAsync();
 

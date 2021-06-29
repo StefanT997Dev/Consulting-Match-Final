@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -12,8 +13,10 @@ namespace API.Services
     public class TokenService
     {
         private readonly IConfiguration _config;
-        public TokenService(IConfiguration config)
+        private readonly UserManager<AppUser> _userManager;
+        public TokenService(IConfiguration config, UserManager<AppUser> userManager)
         {
+            _userManager = userManager;
             _config = config;
         }
 
@@ -23,7 +26,8 @@ namespace API.Services
             {
                 new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.NameIdentifier,user.Id),
-                new Claim(ClaimTypes.Email,user.Email)
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Role,_userManager.GetRolesAsync(user).Result[0])
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));

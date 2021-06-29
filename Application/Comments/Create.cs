@@ -1,5 +1,4 @@
 using System;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -8,7 +7,6 @@ using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -48,7 +46,7 @@ namespace Application.Comments
 
                 if(post == null) return null;
 
-                var user = await _context.Users.SingleOrDefaultAsync(x=>x.UserName == _userAccessor.GetUsername());
+                var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
 
                 var comment = new Comment
                 {

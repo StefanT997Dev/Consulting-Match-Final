@@ -32,7 +32,7 @@ namespace Application.Reviews
             {
                 var consultant = await _context.Users.FindAsync(request.Id);
 
-                var client = await _context.Users.FirstOrDefaultAsync(c => c.DisplayName == _userAccessor.GetUsername());
+                var client = await _context.Users.FirstOrDefaultAsync(c => c.UserName == _userAccessor.GetUsername());
 
                 var review = new Review
                 {
