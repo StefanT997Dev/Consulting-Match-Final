@@ -102,7 +102,6 @@ export default observer(function Navbar() {
         <Menu.Item
           onClick={() => {
             logout();
-            // history.push("/");
             history.replace("/");
           }}
           position="right"
@@ -112,8 +111,6 @@ export default observer(function Navbar() {
       )}
     </React.Fragment>
   );
-
-  console.log("tabs", tabs);
 
   return (
     <div>
@@ -138,7 +135,7 @@ export default observer(function Navbar() {
             width="thin"
             vertical
             visible={sidebarVisible}
-            onHinde={() => setSidebarVisible(false)}
+            onHide={() => setSidebarVisible(false)}
           >
             {tabs}
           </Sidebar>
