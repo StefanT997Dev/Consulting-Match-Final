@@ -1,0 +1,17 @@
+.navbar {
+  border-radius: 0px !important;
+}
+
+.consultantDisplayList{
+  position: absolute;
+  background-color: white;
+  margin-top: 10rem;
+  border-radius: 2px;
+  width: 600px;
+  z-index: 99999;
+}
+
+li{
+  list-style: none;
+  display: inline-block;
+}

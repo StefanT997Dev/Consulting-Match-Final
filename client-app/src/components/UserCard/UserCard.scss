@@ -1,0 +1,27 @@
+@use '../../scss/color';
+
+.user-card {
+  margin: 2rem !important;
+  padding: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &__info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    &__image {
+    }
+
+    &__name {
+      margin-left: 1rem;
+    }
+  }
+
+  &__actions {
+  }
+}

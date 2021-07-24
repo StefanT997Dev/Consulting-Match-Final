@@ -1,0 +1,9 @@
+@import "../../scss/color";
+
+.inline-text-button {
+  color: $color-primary;
+  background: transparent;
+  text-decoration: underline;
+  border: none;
+  cursor: pointer;
+}

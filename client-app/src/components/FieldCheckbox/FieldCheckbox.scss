@@ -1,0 +1,13 @@
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  &__label {
+    text-align: left;
+    margin: 0 0 0 1rem !important;
+  }
+  &__error {
+    color: red;
+    font-weight: 500;
+  }
+}

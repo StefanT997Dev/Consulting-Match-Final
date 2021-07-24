@@ -1,0 +1,18 @@
+@use '../../scss/color';
+
+.admin-panel-page {
+  margin-top: 2rem !important;
+
+  &__cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 0;
+  }
+}

@@ -1,0 +1,9 @@
+.text-input {
+  &__label {
+    text-align: left;
+  }
+  &__error {
+    color: red;
+    font-weight: 500;
+  }
+}
