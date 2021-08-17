@@ -20,7 +20,7 @@ namespace Infrastructure.Security
             _context = context;
         }
 
-        public async Task<List<ReviewDto>> GetUserReviews(string userId)
+        public async Task<List<ReviewDto>> GetReviews(string userId)
         {
             return await _context.Reviews
                 .AsNoTracking()

@@ -15,6 +15,8 @@ namespace Application.Core
             CreateMap<Category,CategoryDto>();
             CreateMap<Review,ReviewDto>();
             CreateMap<AppUser,ConsultantSearchDto>();
+            CreateMap<AppUser,Profiles.Profile>();
+            CreateMap<AppUser,ConsultantDisplayDto>();
             CreateMap<AppUserCategory,Profiles.Profile>()
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.AppUser.Bio));

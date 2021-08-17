@@ -2,8 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs;
+using Application.Interfaces;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Consultants
@@ -19,36 +22,39 @@ namespace Application.Consultants
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            private readonly ICategoriesRepository _categoriesRepository;
+            private readonly IReviewsRepository _reviewsRepository;
+            public Handler(DataContext context, IMapper mapper, ICategoriesRepository categoriesRepository, IReviewsRepository reviewsRepository)
             {
+                _reviewsRepository = reviewsRepository;
+                _categoriesRepository = categoriesRepository;
                 _mapper = mapper;
                 _context = context;
             }
 
             public async Task<Result<ConsultantDisplayDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await _context.Users.FindAsync(request.Id);
+                var user = await _context.Users
+                    .ProjectTo<ConsultantDisplayDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(u => u.Id==request.Id);
 
-                var listOfCategoryNames = await Common.GetCategoriesForUser(_context, user);
+                var listOfCategoryNames = await _categoriesRepository.GetCategories(user);
 
-                var listOfReviewsDtoForConsultant = await Common.GetUserReviews(_context, _mapper, user.Id);
+                var listOfReviewsDtoForConsultant = await _reviewsRepository.GetReviews(user.Id);
 
                 var result = Common.GetAverageReviewAndTotalStarRating(listOfReviewsDtoForConsultant);
 
-                var consultantDisplayDto = new ConsultantDisplayDto
-                {
-                    Id = user.Id,
-                    DisplayName = user.DisplayName,
-                    Image = user.ProfilePicture,
-                    Bio = user.Bio,
-                    NumberOfReviews = listOfReviewsDtoForConsultant.Count,
-                    AverageStarReview = result.Item2,
-                    Reviews = listOfReviewsDtoForConsultant,
-                    TotalStarRating = result.Item1,
-                    Categories = listOfCategoryNames
-                };
+                user.Reviews=listOfReviewsDtoForConsultant;
 
-                return Result<ConsultantDisplayDto>.Success(consultantDisplayDto);
+                user.Categories=listOfCategoryNames;
+
+                user.AverageStarReview=result.Item2;
+
+                user.NumberOfReviews=listOfReviewsDtoForConsultant.Count;
+
+                user.TotalStarRating=result.Item1;
+
+                return Result<ConsultantDisplayDto>.Success(user);
             }
         }
     }

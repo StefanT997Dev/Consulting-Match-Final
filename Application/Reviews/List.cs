@@ -35,7 +35,7 @@ namespace Application.Reviews
 
             public async Task<Result<List<ReviewDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var reviews = await _reviewsRepository.GetUserReviews(request.Id);
+                var reviews = await _reviewsRepository.GetReviews(request.Id);
 
                 if (reviews.Count == 0)
                 {
