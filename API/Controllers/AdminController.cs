@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.DTOs;
 using Application.Admin;
 using Application.DTOs;
@@ -12,7 +14,7 @@ namespace API.Controllers
     public class AdminController:BaseApiController
     {
         [HttpPost]
-        //[Authorize(Roles="Admin")]
+        [ClaimRequirement(ClaimTypes.Role,"Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> Add(Application.DTOs.RoleDto role)
         {

@@ -42,6 +42,8 @@ namespace API.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
+            user.Role = await _context.Roles.FirstOrDefaultAsync(x => x.Users.Contains(user));
+
             if (result.Succeeded)
             {
                 return new UserDto

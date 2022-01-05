@@ -3,6 +3,8 @@ using Application.Mentors;
 using Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using API.Attributes;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -28,8 +30,9 @@ namespace API.Controllers
         {
             return HandleResultForLists(await Mediator.Send(new Application.Reviews.List.Query{Id=id}));
         }*/
-        
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Client")]
+
+        [ClaimRequirement(ClaimTypes.Role, "Client")]
+        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Client")]
         [HttpPost("{id}/reviews")]
         public async Task<IActionResult> PostReview([FromRoute]string id,[FromBody]ReviewDto review)
         {
