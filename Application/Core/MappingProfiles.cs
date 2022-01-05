@@ -17,7 +17,8 @@ namespace Application.Core
             CreateMap<AppUserCategory,MentorDisplayDto>()
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Mentor.DisplayName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.Mentor.Bio));
-            CreateMap<AppUser,UserDto>();
+            CreateMap<AppUser,UserDto>()
+                .ForMember(ud => ud.Role, o => o.MapFrom(au => au.Role.Name));
             CreateMap<Skill,SkillDto>();
             CreateMap<SkillDto, Skill>();
             CreateMap<AppUserSkill,SkillDto>()

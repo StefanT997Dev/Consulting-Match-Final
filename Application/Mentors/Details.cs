@@ -31,7 +31,7 @@ namespace Application.Mentors
 
                 if (user == null)
                 {
-                    return Result<MentorDisplayDto>.Failure("Nismo uspeli da pronađemo željenog korisnika");
+                    return Result<MentorDisplayDto>.Failure("Nismo uspeli da pronađemo željenog korisnika, potencijalni problem: Korisnik nema ulogu mentora već potencijalnog mentora");
                 }
 
                 user.NumberOfReviews = user.Reviews.Count;

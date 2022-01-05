@@ -21,7 +21,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMentor(string id)
         {
-            return HandleResult(await Mediator.Send(new Application.Mentors.Details.Query{Id=id}));
+            return HandleResult(await Mediator.Send(new Details.Query{Id=id}));
         }
 
         /*[AllowAnonymous]

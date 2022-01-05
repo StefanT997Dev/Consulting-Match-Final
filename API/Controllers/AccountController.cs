@@ -44,16 +44,22 @@ namespace API.Controllers
 
             user.Role = await _context.Roles.FirstOrDefaultAsync(x => x.Users.Contains(user));
 
+            if (user.Role == null)
+            {
+                return BadRequest("Nismo uspeli da pronađemo ulogu korisnika");
+            }
+
             if (result.Succeeded)
             {
                 return new UserDto
                 {
-                    Id=user.Id,
+                    Id = user.Id,
                     DisplayName = user.DisplayName,
                     Token = _tokenService.CreateToken(user),
                     Username = user.UserName,
                     Image = "Some image",
-                    Video = user.SalesVideo
+                    Video = user.SalesVideo,
+                    Role = user.Role.Name
                 };
             }
 
@@ -105,7 +111,8 @@ namespace API.Controllers
                             DisplayName = user.DisplayName,
                             Image = null,
                             Token = _tokenService.CreateToken(user),
-                            Username = user.UserName
+                            Username = user.UserName,
+                            Role = role.Name
                         };
                     }
 

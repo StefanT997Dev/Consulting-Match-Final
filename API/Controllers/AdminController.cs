@@ -31,7 +31,7 @@ namespace API.Controllers
 
         [HttpPatch]
         [AllowAnonymous]
-        public async Task<IActionResult> UpdateMento(AdminUpdateMentorDto updateMentorDto)
+        public async Task<IActionResult> UpdateMentor(AdminUpdateMentorDto updateMentorDto)
         {
             return HandleResult(await Mediator.Send(new UpdateMentor.Command { UpdateMentorDto = updateMentorDto }));
         }

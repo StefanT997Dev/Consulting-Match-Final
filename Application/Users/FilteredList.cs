@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Core.Wrappers;
 using Application.DTOs;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -35,20 +36,14 @@ namespace Application.Users
                 var users = await _context.Users
                     .Skip((request.PageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
-
-                var listOfUserDtos = new List<UserDto>();
 
                 var totalRecords = await _context.Users.CountAsync();
 
-                foreach(var user in users)
-                {
-                    listOfUserDtos.Add(_mapper.Map<UserDto>(user));
-                }
+                int numberOfPages = ((totalRecords - 1) / request.PageSize) + 1;
 
-                int numberOfPages = request.PageSize>totalRecords?totalRecords/request.PageSize+1:totalRecords/request.PageSize;
-
-                return PagedResult<List<UserDto>>.Success(listOfUserDtos,numberOfPages,totalRecords);
+                return PagedResult<List<UserDto>>.Success(users,numberOfPages,totalRecords);
             }
         }
     }
