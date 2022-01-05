@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Mentorships;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,11 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { Mentorship = mentorship }));
 		}
 
-		/*[HttpGet]
+		[AllowAnonymous]
+		[HttpGet]
 		public async Task<IActionResult> GetAllClientsOfMentor()
 		{
-			return HandleResult(await Mediator.Send(new ListOfClientsForMentor { }));
-		}*/
+			return HandleResult(await Mediator.Send(new ListOfClientsForMentor.Query()));
+		}
 	}
 }

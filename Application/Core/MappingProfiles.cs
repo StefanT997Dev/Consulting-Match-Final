@@ -44,6 +44,8 @@ namespace Application.Core
             CreateMap<JobApplicationDto, MentorJobApplication>();
             CreateMap<AppUserCategoryDto, AppUserCategory>();
             CreateMap<Role, RoleDto>();
+            CreateMap<Mentorship, ClientDashboardDisplayDto>()
+                .ForMember(cddd => cddd.DisplayName, o => o.MapFrom(m => m.Client.DisplayName));
         }
     }
 }
