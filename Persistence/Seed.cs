@@ -107,6 +107,8 @@ namespace Persistence
                 };
 
                 context.Mentorships.AddRange(mentorships);
+                
+                await context.SaveChangesAsync();
             }
 
             if (!context.Categories.Any())
@@ -135,6 +137,8 @@ namespace Persistence
                 }
             };
                 context.Categories.AddRange(categories);
+                
+                await context.SaveChangesAsync();
             }
 
             if (!context.Skills.Any())
@@ -207,6 +211,8 @@ namespace Persistence
                 }
             };
                 context.Skills.AddRange(skills);
+
+                await context.SaveChangesAsync();
             }
 
             if (!context.AppUserSkills.Any())
@@ -247,6 +253,8 @@ namespace Persistence
                 };
 
                 context.AppUserSkills.AddRange(appUserSkills);
+
+                await context.SaveChangesAsync();
             }
                 await context.SaveChangesAsync();
         }
