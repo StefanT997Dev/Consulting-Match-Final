@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -15,9 +16,6 @@ namespace Persistence
             {
                 var roles = new List<Role>
                 {
-                    new Role{
-                        Name="Potential Client"
-                    },
                     new Role{
                         Name="Client"
                     },
@@ -39,7 +37,7 @@ namespace Persistence
             if(!userManager.Users.Any())
             {
                 var mentorRole = context.Roles.FirstOrDefault(x => x.Name == "Potential Mentor");
-                var clientRole = context.Roles.FirstOrDefault(x => x.Name == "Potential Client");
+                var clientRole = context.Roles.FirstOrDefault(x => x.Name == "Client");
 
                 var users=new List<AppUser>
                 {
@@ -209,6 +207,46 @@ namespace Persistence
                 }
             };
                 context.Skills.AddRange(skills);
+            }
+
+            if (!context.AppUserSkills.Any())
+            {
+                var mentor1 = await userManager.FindByEmailAsync("bob@test.com");
+                var mentor2 = await userManager.FindByEmailAsync("tom@test.com");
+                var skill1 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "C#");
+                var skill2 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "Java");
+                var skill3 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "PHP");
+
+                var appUserSkills = new List<AppUserSkill>
+                {
+                    new AppUserSkill
+                    {
+                        MentorId = mentor1.Id,
+                        SkillId = skill1.Id
+                    },
+                    new AppUserSkill
+                    {
+                        MentorId = mentor1.Id,
+                        SkillId = skill2.Id
+                    },
+                    new AppUserSkill
+                    {
+                        MentorId = mentor1.Id,
+                        SkillId = skill3.Id
+                    },
+                    new AppUserSkill
+                    {
+                        MentorId = mentor2.Id,
+                        SkillId = skill2.Id
+                    },
+                    new AppUserSkill
+                    {
+                        MentorId = mentor2.Id,
+                        SkillId = skill3.Id
+                    }
+                };
+
+                context.AppUserSkills.AddRange(appUserSkills);
             }
                 await context.SaveChangesAsync();
         }
