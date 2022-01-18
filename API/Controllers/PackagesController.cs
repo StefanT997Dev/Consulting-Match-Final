@@ -12,8 +12,8 @@ namespace API.Controllers
 	{
 		[HttpPost]
 		public async Task<IActionResult> Add(PackageDto package)
-		{ 
-			return HandleResult(await Mediator.Send(new Create.))
+		{
+			return HandleResult(await Mediator.Send(new Create.Command { Package=package}));
 		}
 	}
 }
