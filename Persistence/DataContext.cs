@@ -20,6 +20,7 @@ namespace Persistence
 		public DbSet<Photo> Photos { get; set; }
 		public DbSet<Mentorship> Mentorships { get; set; }
 		public new DbSet<Role> Roles { get; set; }
+		public DbSet<Package> Packages { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
         {

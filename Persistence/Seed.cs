@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,8 +36,9 @@ namespace Persistence
 
             if(!userManager.Users.Any())
             {
-                var mentorRole = context.Roles.FirstOrDefault(x => x.Name == "Potential Mentor");
-                var clientRole = context.Roles.FirstOrDefault(x => x.Name == "Client");
+                var mentorRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Potential Mentor");
+                var clientRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Client");
+                var adminRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Admin");
 
                 var users=new List<AppUser>
                 {
@@ -75,6 +76,13 @@ namespace Persistence
                         Email="miljan@test.com",
                         Bio="I am Miljan and I'm a software engineer",
                         Role=clientRole
+                    },
+                    new AppUser{ 
+                        DisplayName="Adminčina",
+                        UserName="adminčina",
+                        Email="admin@test.com",
+                        Bio="Ja sam admin i upravljam svime i svačim",
+                        Role=adminRole
                     }
                 };
 
