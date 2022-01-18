@@ -29,9 +29,11 @@ namespace Application.Packages
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				if (await _context.Packages
-					.AnyAsync(x => x.MentorId == request.Package.MentorId))
+					.AnyAsync(x => x.MentorId == request.Package.MentorId &&
+					x.NumberOfSessions == request.Package.NumberOfSessions
+					&& x.DurationInMonths == request.Package.DurationInMonths))
 				{
-					return Result<Unit>.Failure("Već ste napravili paket");
+					return Result<Unit>.Failure("Već ste napravili isti paket");
 				}
 				if (await _packageRepository.AddAsync(request.Package))
 				{
