@@ -78,10 +78,10 @@ namespace Persistence
                         Role=clientRole
                     },
                     new AppUser{ 
-                        DisplayName="Adminčina",
-                        UserName="adminčina",
+                        DisplayName="Admin",
+                        UserName="admin",
                         Email="admin@test.com",
-                        Bio="Ja sam admin i upravljam svime i svačim",
+                        Bio="I am an admin and I control everything",
                         Role=adminRole
                     }
                 };
