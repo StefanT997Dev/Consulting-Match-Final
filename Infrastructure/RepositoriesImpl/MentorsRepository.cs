@@ -43,5 +43,11 @@ namespace Infrastructure.RepositoriesImpl
 				.Take(pageSize)
 				.ToListAsync(),totalRecords);
 		}
+
+		public async Task<bool> IsMentor(string userId)
+		{
+			return await entities.AnyAsync(x => x.Id == userId &&
+			(x.Role.Name == "Mentor" || x.Role.Name == "Potential Mentor"));
+		}
 	}
 }

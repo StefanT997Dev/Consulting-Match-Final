@@ -36,12 +36,6 @@ namespace Application.Mentors
 
                 int totalRecords = mentorTuple.Item2;
 
-                if (!mentorsList.Any())
-                {
-                    return PagedResult<List<MentorDisplayDto>>
-                        .Failure("Nismo uspeli da pronađemo mentore na osnovu prosleđenih kriterijuma");
-                }
-
                 foreach (var mentor in mentorsList)
                 {
                     mentor.NumberOfReviews = mentor.Reviews.Count;

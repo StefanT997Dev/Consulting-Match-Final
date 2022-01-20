@@ -50,12 +50,6 @@ namespace Application.Mentorships
 				var listOfClients = await _mentorshipRepository
 					.FindAsync<ClientDashboardDisplayDto>(x => x.MentorId == mentor.Id);
 
-				if (!listOfClients.Any())
-				{
-					return Result<List<ClientDashboardDisplayDto>>
-						.Failure("Nemate još nijednog klijenta");
-				}
-
 				return Result<List<ClientDashboardDisplayDto>>.
 					Success(listOfClients.ToList());
 			}

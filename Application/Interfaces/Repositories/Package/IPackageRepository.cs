@@ -8,5 +8,6 @@ namespace Application.Interfaces.Repositories.Package
 {
 	public interface IPackageRepository : IRepository<Domain.Package>
 	{
+		Task<bool> IsPackageLimitExceeded(string mentorId);
 	}
 }
