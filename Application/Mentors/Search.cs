@@ -34,7 +34,7 @@ namespace Application.Mentors
             public async Task<Result<IEnumerable<MentorSearchDto>>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var mentorsWithSkills = await _mentorsRepository
-                    .FindAsync<MentorSearchDto>(u => u.Skills.Any(s => s.Skill.Name.StartsWith(request.Skill.Name)));
+                    .FindAsync<MentorSearchDto>(u => u.Skills.Any(s => s.Skill.Name.StartsWith(request.Skill.Name, StringComparison.InvariantCultureIgnoreCase)));
 
                 if (!mentorsWithSkills.Any())
                 {
