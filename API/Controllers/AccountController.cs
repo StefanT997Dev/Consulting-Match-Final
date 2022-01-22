@@ -86,6 +86,11 @@ namespace API.Controllers
                 return BadRequest("Nismo uspeli da pronađemo izabranu ulogu");
             }
 
+            if (registerDto.RoleName == "Mentor")
+            {
+                role.Name = "Potential Mentor";
+            }
+
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,

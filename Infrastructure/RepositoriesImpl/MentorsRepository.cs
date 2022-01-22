@@ -25,7 +25,7 @@ namespace Infrastructure.RepositoriesImpl
 		{
 			int totalRecords = 0;
 			var mentors = entities
-				.Where(x => x.Role.Name == "Mentor")
+				.Where(x => x.Role.Name == "Mentor" || x.Role.Name == "Potential Mentor")
 				.ProjectTo<MentorDisplayDto>(mapperConfigurationProvider);
 
 			if (category != null)
