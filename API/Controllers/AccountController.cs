@@ -66,7 +66,33 @@ namespace API.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("register")]
+        [HttpPost("register/client")]
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        {
+            if (await _context.Clients.AnyAsync(x => x.Email == registerDto.Email))
+            {
+                return BadRequest("Email je zauzet");
+            }
+
+            var client = new Client
+            {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
+                Email = registerDto.Email,
+                TotalBudget = registerDto.TotalBudget,
+                FieldOfInterest = registerDto.FieldOfInterest,
+                EnglishLevel = registerDto.EnglishLevel,
+                ExpectedSalary = registerDto.ExpectedSalary
+            };
+
+            _context.Clients.Add(client);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Podaci su uspešno sačuvani");
+        }
+
+        /*[HttpPost("register/mentor")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
@@ -102,8 +128,8 @@ namespace API.Controllers
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-				try
-				{
+                try
+                {
                     var result = await _userManager.CreateAsync(user, registerDto.Password);
 
                     UserDto userDto = null;
@@ -125,14 +151,14 @@ namespace API.Controllers
 
                     return userDto;
                 }
-				catch (System.Exception)
-				{
+                catch (System.Exception)
+                {
                     await transaction.RollbackAsync();
-				}
-            } 
+                }
+            }
 
             return BadRequest("Problem pri registraciji korisnika");
-        }
+        }*/
 
         [Authorize]
         [HttpGet]
