@@ -49,11 +49,12 @@ namespace Infrastructure.RepositoriesImpl
 				.ToListAsync();
 		}
 
-		public async Task<TOutput> GetAsync<TOutput>(Expression<Func<TOutput, bool>> expression) where TOutput : class
+		public async Task<TOutput> GetAsync<TOutput>(Expression<Func<TInput, bool>> expression1, Expression<Func<TOutput, bool>> expression2) where TOutput : class
 		{
 			return await entities
+				.Where(expression1)
 				.ProjectTo<TOutput>(mapperConfigurationProvider)
-				.FirstOrDefaultAsync(expression);
+				.FirstOrDefaultAsync(expression2);
 		}
 	}
 }

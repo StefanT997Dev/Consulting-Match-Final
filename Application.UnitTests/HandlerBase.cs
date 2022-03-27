@@ -16,6 +16,7 @@ namespace Application.UnitTests
 		public HandlerBase()
 		{
 			cancellationToken = new CancellationToken();
+			repository = new Mock<TRepoInterface>();
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Persistence.MongoContext;
 
 namespace API.Extensions
 {
@@ -69,6 +70,7 @@ namespace API.Extensions
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
+            services.AddScoped<IDbContext, MongoContext>();
 
             return services;
         }

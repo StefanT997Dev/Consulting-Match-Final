@@ -92,75 +92,49 @@ namespace API.Controllers
             return Ok("Podaci su uspešno sačuvani");
         }
 
-        /*[HttpPost("register/mentor")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
-        {
-            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
-            {
-                return BadRequest("Email je zauzet");
-            }
+		[HttpPost("register/mentor")]
+		public async Task<ActionResult<UserDto>> Register(MentorRegisterDto registerDto)
+		{
+			if (!await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+			{
+				return BadRequest("Email je zauzet");
+			}
 
-            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
-            {
-                return BadRequest("Korisničko ime je zauzeto");
-            }
+			var user = new AppUser
+			{
+				Email = registerDto.Email
+			};
 
-            var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == registerDto.RoleName);
+			using (var transaction = await _context.Database.BeginTransactionAsync())
+			{
+				try
+				{
+					var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (role == null)
-            {
-                return BadRequest("Nismo uspeli da pronađemo izabranu ulogu");
-            }
+					UserDto userDto = null;
 
-            if (registerDto.RoleName == "Mentor")
-            {
-                role.Name = "Potential Mentor";
-            }
+					if (result.Succeeded)
+					{
+						userDto = new UserDto
+						{
+							Token = _tokenService.CreateToken(user),
+						};
+					}
 
-            var user = new AppUser
-            {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.Username,
-                RoleId = role.Id,
-                Role = role
-            };
+					await transaction.CommitAsync();
 
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var result = await _userManager.CreateAsync(user, registerDto.Password);
+					return userDto;
+				}
+				catch (System.Exception)
+				{
+					await transaction.RollbackAsync();
+				}
+			}
 
-                    UserDto userDto = null;
+			return BadRequest("Problem pri registraciji korisnika");
+		}
 
-                    if (result.Succeeded)
-                    {
-                        userDto = new UserDto
-                        {
-                            Id = user.Id,
-                            DisplayName = user.DisplayName,
-                            Image = null,
-                            Token = _tokenService.CreateToken(user),
-                            Username = user.UserName,
-                            Role = role.Name
-                        };
-                    }
-
-                    await transaction.CommitAsync();
-
-                    return userDto;
-                }
-                catch (System.Exception)
-                {
-                    await transaction.RollbackAsync();
-                }
-            }
-
-            return BadRequest("Problem pri registraciji korisnika");
-        }*/
-
-        [Authorize]
+		[Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {

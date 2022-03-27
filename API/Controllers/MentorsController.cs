@@ -5,12 +5,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using API.Attributes;
 using System.Security.Claims;
+using Persistence;
+using Microsoft.EntityFrameworkCore;
+using Application.Core.Wrappers;
+using Domain;
+using System.Collections.Generic;
 
 namespace API.Controllers
 {
 	public class MentorsController : BaseApiController
     {
-        [AllowAnonymous]
+		private readonly DataContext _context;
+
+		public MentorsController(DataContext context)
+		{
+			_context = context;
+		}
+
+		[AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetMentorsPaginated([FromQuery] FilterDto filter)
         {
@@ -53,12 +65,12 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new CreateAPost.Command{Id=id,Post=post}));
         }
 */
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Search(SearchSkillDto skill)
         {
-            return Ok(await Mediator.Send(new Search.Command{Skill=skill}));
-        }
+            //return Ok(await Mediator.Send(new Search.Command{Skill=skill}));
+        }*/
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Mentor")]
         [HttpPatch]

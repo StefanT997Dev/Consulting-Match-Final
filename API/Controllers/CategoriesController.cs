@@ -38,8 +38,8 @@ namespace API.Controllers
             return HandleResultForCollections(await Mediator.Send(new ListOfMentors.Query{Id=id}));
         }
 */
-		[Authorize(AuthenticationSchemes = "Bearer", Roles = "Mentor")]
-		[HttpPost("choose")]
+        [AllowAnonymous]
+		[HttpPut("choose")]
 		public async Task<IActionResult> PickACategoryForMentor(AppUserCategoryDto appUserCategory)
 		{
 			return Ok(await Mediator.Send(new ChooseCategory.Command { AppUserCategory = appUserCategory }));

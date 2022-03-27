@@ -1,5 +1,4 @@
-﻿using Application.Interfaces.Repositories;
-using Application.Interfaces.Repositories.AppUserCategories;
+﻿using Application.Interfaces.Repositories.Blogs;
 using Application.Interfaces.Repositories.Categories;
 using Application.Interfaces.Repositories.JobApplications;
 using Application.Interfaces.Repositories.Mentors;
@@ -17,11 +16,11 @@ namespace API.Extensions.RepositoryServices
 		{
 			services.AddScoped<IMentorsRepository, MentorsRepository>();
 			services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-			services.AddScoped<IAppUserCategoriesRepository, AppUserCategoriesRepository>();
 			services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 			services.AddScoped<IReviewsRepository, ReviewsRepository>();
 			services.AddScoped<IMentorshipRepository, MentorshipRepository>();
 			services.AddScoped<IPackageRepository, PackageRepository>();
+			services.AddScoped<IBlogRepository, BlogRepository>();
 
 			return services;
 		}

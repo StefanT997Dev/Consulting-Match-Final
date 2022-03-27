@@ -17,30 +17,23 @@ namespace Application.Mentors
             public string Id { get; set; }
         }
 
-        public class Handler : GenericHandler<AppUser> ,IRequestHandler<Query, Result<MentorDisplayDto>>
-        {	
-            public Handler(IMentorsRepository mentorsRepository) : base(mentorsRepository)
+        public class Handler : IRequestHandler<Query, Result<MentorDisplayDto>>
+        {
+			private readonly IMentorsRepository _mentorsRepository;
+
+			public Handler(IMentorsRepository mentorsRepository)
             {
-                
+				_mentorsRepository = mentorsRepository;
 			}
 
             public async Task<Result<MentorDisplayDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await repository.GetAsync<MentorDisplayDto>(x => x.Id == request.Id 
-                && x.Role == "Mentor");
-
+                var user = await _mentorsRepository.GetMentorAsync<MentorDisplayDto>(request.Id);
+                 
                 if (user == null)
                 {
-                    return Result<MentorDisplayDto>.Failure("Nismo uspeli da pronađemo željenog korisnika, potencijalni problem: Korisnik nema ulogu mentora već potencijalnog mentora");
+                    return Result<MentorDisplayDto>.Failure("Nismo uspeli da pronađemo željenog korisnika, potencijalni problem: Korisnik nema ulogu mentora");
                 }
-
-                user.NumberOfReviews = user.Reviews.Count;
-
-                var result = Common.GetTotalStarRatingAndAverageStarReview(user.Reviews);
-
-                user.TotalStarRating = result.Item1;
-
-                user.AverageStarReview = result.Item2;
 
                 return Result<MentorDisplayDto>.Success(user);
             }

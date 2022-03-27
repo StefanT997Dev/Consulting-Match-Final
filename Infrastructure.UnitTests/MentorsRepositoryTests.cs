@@ -18,7 +18,7 @@ namespace Infrastructure.UnitTests
 		[Theory]
 		[InlineData(0, false)]
 		[InlineData(5, true)]
-		public async Task GetMentorsPaginatedAsync_MentorsExistOrNot_ReturnsAdequeateResult(
+		public async Task GetMentorsPaginatedAsync_MentorsExistOrNot_ReturnsAdequateResult(
 			int numberOfMentors,
 			bool returnsMentors
 			)

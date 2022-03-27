@@ -38,7 +38,7 @@ namespace Application.Mentors
 
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
-				var mentor = await _repository.GetAsync<MentorDisplayDto>(x => x.Id == request.Mentor.Id);
+				/*var mentor = await _repository.GetAsync<MentorDisplayDto>(x => x.Id == request.Mentor.Id);
 
 				if (mentor == null) return null;
 
@@ -52,7 +52,7 @@ namespace Application.Mentors
 
 				var result = await _context.SaveChangesAsync() > 0;
 
-				if (!result) return Result<Unit>.Failure("Nismo uspeli da sačuvamo izmene");
+				if (!result) return Result<Unit>.Failure("Nismo uspeli da sačuvamo izmene");*/
 
 				return Result<Unit>.Success(Unit.Value);
 			}

@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories.Mentors
 	{
 		Task<Tuple<IEnumerable<MentorDisplayDto>, int>> GetMentorsPaginatedAsync(int pageNumber, int pageSize, string category);
 		Task<bool> IsMentor(string userId);
+		Task<TInputDto> GetMentorAsync<TInputDto>(string id);
 	}
 }

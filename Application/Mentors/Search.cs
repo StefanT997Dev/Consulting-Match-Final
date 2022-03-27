@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,15 +33,15 @@ namespace Application.Mentors
 
             public async Task<Result<IEnumerable<MentorSearchDto>>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var mentorsWithSkills = await _mentorsRepository
-                    .FindAsync<MentorSearchDto>(u => u.Skills.Any(s => s.Skill.Name.StartsWith(request.Skill.Name, StringComparison.InvariantCultureIgnoreCase)));
+                *//*var mentorsWithSkills = await _mentorsRepository
+                    .FindAsync<MentorSearchDto>(u => u.Skills.Any(s => s.Skill.Name.StartsWith(request.Skill.Name, StringComparison.InvariantCultureIgnoreCase)));*/
 
-                if (!mentorsWithSkills.Any())
+                /*if (!mentorsWithSkills.Any())
                 {
                     return Result<IEnumerable<MentorSearchDto>>.Failure("Nismo uspeli da pronađemo nijednog mentora");
-                }
+                }*//*
                 return Result<IEnumerable<MentorSearchDto>>.Success(mentorsWithSkills);
             }
         }
     }
-}
+}*/

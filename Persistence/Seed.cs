@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
@@ -10,6 +12,14 @@ namespace Persistence
 {
     public class Seed
     {
+        public static byte[] ImageToByteArray(System.Drawing.Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, imageIn.RawFormat);
+                return ms.ToArray();
+            }
+        }
         public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
             if (!context.Roles.Any())
@@ -34,7 +44,36 @@ namespace Persistence
                 await context.SaveChangesAsync();
             }
 
-            if(!userManager.Users.Any())
+            if (!context.Mentors.Any())
+            {
+                var mentors = new List<Mentor>
+                {
+                    new Mentor
+                    {
+                        FirstAndLastName="Aleksandar Anđelković",
+                        Bio="Želiš senior softverskog inženjera kao svog ličnog mentora za C#, najtraženiji programski jezik na tržištu u Srbiji?\n\nUz moju pomoć ćeš kroz praktične projekte stići do zavidnog nivoa bilo da si apsolutni početnik ili već imaš nekog predznanja.\n\nZašto ja? Opsednut sam najnovijim tehnologijama I uređajima iz čega proizilazi moj konstantan napredak i veštine koje su u koraku sa vremenom. Mentorstvo drugih me ispunjava i doprinosi mom ličnom razvoju. :)\n\nUkratko priča o meni i mojim vrednostima. Ukoliko želiš da dođeš do narednog nivoa voleo bih da ti pomognem na tom putu.\n\nKlikni na dugme da zakažeš konsultaciju i krećemo sa radom! 💪",
+                        Photo=ImageToByteArray(Image.FromFile("C:\\Users\\Stefan\\Desktop\\Informacije o mentorima\\Slike\\Aleksandar Anđelković.jfif")),
+                        Category ="Web Developer",
+                        Skills= new List<string> 
+                        {
+                            "C#",
+                            ".NET",
+                            "Entity Framework",
+                            "Softverska arhitektura", 
+                            "Softverski paterni", 
+                            "Monolitna arhitektura",
+                            "Mikroservisna arhitektura", 
+                            "Docker", 
+                            "Azure Cloud"
+                        }
+                    }
+                };
+                context.Mentors.AddRange(mentors);
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!userManager.Users.Any())
             {
                 var mentorRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Potential Mentor");
                 var clientRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Client");

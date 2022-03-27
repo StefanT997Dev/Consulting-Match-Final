@@ -32,20 +32,21 @@ namespace Application.Mentors
             {
                 var mentorTuple = await _mentorsRepository.GetMentorsPaginatedAsync(request.Filter.PageNumber, request.Filter.PageSize, request.Filter.Category);
 
+                if (mentorTuple == null)
+                {
+                    return PagedResult<List<MentorDisplayDto>>
+                        .Failure("Desila se greška, nemamo nijednog mentora u bazi.");
+                }
+
                 var mentorsList = mentorTuple.Item1.ToList();
 
-                int totalRecords = mentorTuple.Item2;
-
-                foreach (var mentor in mentorsList)
+                if (!mentorsList.Any())
                 {
-                    mentor.NumberOfReviews = mentor.Reviews.Count;
-
-                    var result = Common.GetTotalStarRatingAndAverageStarReview(mentor.Reviews);
-
-                    mentor.TotalStarRating = result.Item1;
-
-                    mentor.AverageStarReview = result.Item2;
+                    return PagedResult<List<MentorDisplayDto>>
+                        .Failure("Nismo uspeli da pronađemo nijednog mentora na osnovu prosleđenih kriterijuma");
                 }
+
+                int totalRecords = mentorTuple.Item2;
 
                 int numberOfPages = CalculateNumberOfPages(request, totalRecords);
 

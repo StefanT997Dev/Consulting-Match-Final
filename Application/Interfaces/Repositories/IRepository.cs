@@ -10,7 +10,7 @@ namespace Application.Interfaces.Repositories
 {
 	public interface IRepository<TInput> 
 	{
-		Task<TOutput> GetAsync<TOutput>(Expression<Func<TOutput, bool>> expression) where TOutput : class;
+		Task<TOutput> GetAsync<TOutput>(Expression<Func<TInput, bool>> expression1, Expression<Func<TOutput, bool>> expression2) where TOutput : class;
 		Task<IEnumerable<TOutput>> GetAllAsync<TOutput>() where TOutput : class;
 		Task<IEnumerable<TOutput>> FindAsync<TOutput>(Expression<Func<TInput, bool>> expression) where TOutput : class;
 

@@ -21,16 +21,24 @@ namespace Infrastructure.RepositoriesImpl
 			
 		}
 
+		public async Task<TInputDto> GetMentorAsync<TInputDto>(string id)
+		{
+			return await entities
+				.Where(x => x.Id == id && x.Role.Name == Application.Resources.Roles.MentorRole)
+				.ProjectTo<TInputDto>(mapperConfigurationProvider)
+				.FirstOrDefaultAsync();
+		}
+
 		public async Task<Tuple<IEnumerable<MentorDisplayDto>,int>> GetMentorsPaginatedAsync(int pageNumber, int pageSize, string category)
 		{
 			int totalRecords = 0;
 			var mentors = entities
-				.Where(x => x.Role.Name == "Mentor" || x.Role.Name == "Potential Mentor")
+				.Where(x => x.Role.Name == Application.Resources.Roles.MentorRole)
 				.ProjectTo<MentorDisplayDto>(mapperConfigurationProvider);
 
 			if (category != null)
 			{
-				mentors.Where(m => m.Categories.Any(c => c.Name == category));
+				mentors.Where(m => m.Category.Name == category);
 				totalRecords = await mentors.CountAsync();
 			}
 			else
@@ -46,8 +54,9 @@ namespace Infrastructure.RepositoriesImpl
 
 		public async Task<bool> IsMentor(string userId)
 		{
-			return await entities.AnyAsync(x => x.Id == userId &&
-			(x.Role.Name == "Mentor" || x.Role.Name == "Potential Mentor"));
+			/*return await entities.AnyAsync(x => x.Id == userId &&
+			(x.Role.Name == "Mentor" || x.Role.Name == "Potential Mentor"));*/
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -13,7 +13,6 @@ namespace Persistence
 		public DbSet<MentorJobApplication> JobApplications { get; set; }
 		public DbSet<Review> Reviews {get;set;}
         public DbSet<Category> Categories { get; set; }
-        public DbSet<AppUserCategory> AppUserCategories { get; set; }
         public DbSet<AppUserSkill> AppUserSkills { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<CategorySkill> CategorySkills { get; set; }
@@ -22,36 +21,37 @@ namespace Persistence
 		public new DbSet<Role> Roles { get; set; }
 		public DbSet<Package> Packages { get; set; }
 		public DbSet<Client> Clients { get; set; }
+		public DbSet<Mentor> Mentors { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUserCategory>(x => x.HasKey(ac => new { ac.AppUserId, ac.CategoryId }));
+			/*builder.Entity<AppUserCategory>(x => x.HasKey(ac => new { ac.AppUserId, ac.CategoryId }));
 
-            builder.Entity<AppUserCategory>()
-                .HasOne(u => u.Mentor)
-                .WithMany(c => c.Categories)
-                .HasForeignKey(ac => ac.AppUserId);
+			builder.Entity<AppUserCategory>()
+				.HasOne(u => u.Mentor)
+				.WithMany(c => c.Categories)
+				.HasForeignKey(ac => ac.AppUserId);
 
-            builder.Entity<AppUserCategory>()
-                .HasOne(u => u.Category)
-                .WithMany(c => c.Mentors)
-                .HasForeignKey(ac => ac.CategoryId);
+			builder.Entity<AppUserCategory>()
+				.HasOne(u => u.Category)
+				.WithMany(c => c.Mentors)
+				.HasForeignKey(ac => ac.CategoryId);*/
 
-            builder.Entity<AppUserSkill>(x => x.HasKey(aus => new { aus.MentorId, aus.SkillId }));
+			builder.Entity<AppUserSkill>(x => x.HasKey(aus => new { aus.MentorId, aus.SkillId }));
 
-            builder.Entity<AppUserSkill>()
-                .HasOne(aus => aus.Mentor)
-                .WithMany(c => c.Skills)
-                .HasForeignKey(aus => aus.MentorId);
+			builder.Entity<AppUserSkill>()
+				.HasOne(aus => aus.Mentor)
+				.WithMany(c => c.Skills)
+				.HasForeignKey(aus => aus.MentorId);
 
-            builder.Entity<AppUserSkill>()
-                .HasOne(aus => aus.Skill)
-                .WithMany(s => s.Mentors)
-                .HasForeignKey(aus => aus.SkillId);
+			builder.Entity<AppUserSkill>()
+				.HasOne(aus => aus.Skill)
+				.WithMany(s => s.Mentors)
+				.HasForeignKey(aus => aus.SkillId);
 
-            builder.Entity<Review>(b =>
+			builder.Entity<Review>(b =>
             {
                 b.HasKey(r => new{r.MentorId,r.ClientId});
 
@@ -79,17 +79,17 @@ namespace Persistence
                     .HasForeignKey(m => m.ClientId);
             });
 
-            builder.Entity<CategorySkill>(x => x.HasKey(cs => new { cs.SkillId , cs.CategoryId }));
+			builder.Entity<CategorySkill>(x => x.HasKey(cs => new { cs.SkillId, cs.CategoryId }));
 
-            builder.Entity<CategorySkill>()
-                .HasOne(cs => cs.Skill)
-                .WithMany(s => s.Categories)
-                .HasForeignKey(cs => cs.SkillId);
+			builder.Entity<CategorySkill>()
+				.HasOne(cs => cs.Skill)
+				.WithMany(s => s.Categories)
+				.HasForeignKey(cs => cs.SkillId);
 
-            builder.Entity<CategorySkill>()
-                .HasOne(cs => cs.Category)
-                .WithMany(c => c.Skills)
-                .HasForeignKey(cs => cs.CategoryId);
-        }
+			builder.Entity<CategorySkill>()
+				.HasOne(cs => cs.Category)
+				.WithMany(c => c.Skills)
+				.HasForeignKey(cs => cs.CategoryId);
+		}
     }
 }
