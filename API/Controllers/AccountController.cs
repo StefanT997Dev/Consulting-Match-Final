@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Services;
@@ -69,27 +70,9 @@ namespace API.Controllers
         [HttpPost("register/client")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await _context.Clients.AnyAsync(x => x.Email == registerDto.Email))
-            {
-                return BadRequest("Email je zauzet");
-            }
-
-            var client = new Client
-            {
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                Email = registerDto.Email,
-                TotalBudget = registerDto.TotalBudget,
-                FieldOfInterest = registerDto.FieldOfInterest,
-                EnglishLevel = registerDto.EnglishLevel,
-                ExpectedSalary = registerDto.ExpectedSalary
-            };
-
-            _context.Clients.Add(client);
-
-            await _context.SaveChangesAsync();
-
-            return Ok("Podaci su uspešno sačuvani");
+            // Email service to send data to my e-mail
+            Console.WriteLine(registerDto.Email);
+            return Ok();
         }
 
 		[HttpPost("register/mentor")]

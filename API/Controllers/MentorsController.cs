@@ -10,22 +10,26 @@ using Microsoft.EntityFrameworkCore;
 using Application.Core.Wrappers;
 using Domain;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
 	public class MentorsController : BaseApiController
     {
 		private readonly DataContext _context;
+		private readonly ILogger<MentorsController> _logger;
 
-		public MentorsController(DataContext context)
+		public MentorsController(DataContext context, ILogger<MentorsController> logger)
 		{
 			_context = context;
+			_logger = logger;
 		}
 
 		[AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetMentorsPaginated([FromQuery] FilterDto filter)
         {
+            _logger.LogInformation("Starting to fetch paginated list");
             return HandlePagedListResult(await Mediator.Send(new PaginatedList.Query{ Filter = filter }));
         }
 

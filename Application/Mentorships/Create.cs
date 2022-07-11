@@ -46,8 +46,7 @@ namespace Application.Mentorships
 				var mentorship = new Mentorship
 				{
 					ClientId = client.Id,
-					MentorId = request.Mentorship.MentorId,
-					NumberOfSessions = request.Mentorship.NumberOfSessions
+					MentorId = request.Mentorship.MentorId
 				};
 
 				if (await _context.Mentorships.AnyAsync(x => x.ClientId == client.Id

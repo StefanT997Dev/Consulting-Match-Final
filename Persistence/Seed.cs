@@ -12,14 +12,6 @@ namespace Persistence
 {
     public class Seed
     {
-        public static byte[] ImageToByteArray(System.Drawing.Image imageIn)
-        {
-            using (var ms = new MemoryStream())
-            {
-                imageIn.Save(ms, imageIn.RawFormat);
-                return ms.ToArray();
-            }
-        }
         public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
             if (!context.Roles.Any())
@@ -52,7 +44,6 @@ namespace Persistence
                     {
                         FirstAndLastName="Aleksandar Anđelković",
                         Bio="Želiš senior softverskog inženjera kao svog ličnog mentora za C#, najtraženiji programski jezik na tržištu u Srbiji?\n\nUz moju pomoć ćeš kroz praktične projekte stići do zavidnog nivoa bilo da si apsolutni početnik ili već imaš nekog predznanja.\n\nZašto ja? Opsednut sam najnovijim tehnologijama I uređajima iz čega proizilazi moj konstantan napredak i veštine koje su u koraku sa vremenom. Mentorstvo drugih me ispunjava i doprinosi mom ličnom razvoju. :)\n\nUkratko priča o meni i mojim vrednostima. Ukoliko želiš da dođeš do narednog nivoa voleo bih da ti pomognem na tom putu.\n\nKlikni na dugme da zakažeš konsultaciju i krećemo sa radom! 💪",
-                        Photo=ImageToByteArray(Image.FromFile("C:\\Users\\Stefan\\Desktop\\Informacije o mentorima\\Slike\\Aleksandar Anđelković.jfif")),
                         Category ="Web Developer",
                         Skills= new List<string> 
                         {
@@ -142,14 +133,12 @@ namespace Persistence
                     new Mentorship
                     {
                         ClientId = client1.Id,
-                        MentorId = mentor.Id,
-                        NumberOfSessions = 40
+                        MentorId = mentor.Id
                     },
                     new Mentorship
                     {
                         ClientId = client2.Id,
-                        MentorId = mentor.Id,
-                        NumberOfSessions = 40
+                        MentorId = mentor.Id
                     }
                 };
 

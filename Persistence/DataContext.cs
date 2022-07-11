@@ -20,7 +20,6 @@ namespace Persistence
 		public DbSet<Mentorship> Mentorships { get; set; }
 		public new DbSet<Role> Roles { get; set; }
 		public DbSet<Package> Packages { get; set; }
-		public DbSet<Client> Clients { get; set; }
 		public DbSet<Mentor> Mentors { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)

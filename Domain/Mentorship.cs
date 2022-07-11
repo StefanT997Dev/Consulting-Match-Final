@@ -12,6 +12,8 @@ namespace Domain
 		public AppUser Mentor { get; set; }
 		public string ClientId { get; set; }
 		public AppUser Client { get; set; }
-		public int NumberOfSessions { get; set; }
+		public int TotalNumberOfSessions { get; set; }
+		public int SessionsDone { get; set; }
+		public DateTime NextSessionDate { get; set; }
 	}
 }
