@@ -59,18 +59,15 @@ namespace API.Extensions
                 options.UseNpgsql(connStr);
             });
 
-            //services.AddDbContext<DataContext>(opt =>
-            //{
-            //    opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
-            //});
             services.AddMediatR(typeof(Create.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped<IUserAccessor,UserAccessor>();
             services.AddSignalR();
-            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IDataSender, GoogleSheetsDataSender>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
             services.AddScoped<IDbContext, MongoContext>();
+            services.AddSingleton(typeof(GoogleSheetsHelper));
 
             return services;
         }

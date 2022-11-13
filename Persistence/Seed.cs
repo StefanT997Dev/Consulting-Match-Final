@@ -21,9 +21,6 @@ namespace Persistence
                     new Role{
                         Name="Client"
                     },
-                    new Role{
-                        Name="Potential Mentor"
-                    },
                     new Role{ 
                         Name="Mentor"
                     },
@@ -64,11 +61,43 @@ namespace Persistence
                 await context.SaveChangesAsync();
             }
 
+            if (!context.Categories.Any())
+            {
+                var categories = new List<Category>
+            {
+                new Category
+                {
+                    Name = "Web Development"
+                },
+                new Category
+                {
+                    Name = "Mobile Development"
+                },
+                new Category
+                {
+                    Name = "Game Development"
+                },
+                new Category
+                {
+                    Name = "Blockchain Development"
+                },
+                new Category
+                {
+                    Name = "Data Science/Machine Learning"
+                }
+            };
+                context.Categories.AddRange(categories);
+
+                await context.SaveChangesAsync();
+            }
+
             if (!userManager.Users.Any())
             {
-                var mentorRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Potential Mentor");
+                var mentorRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Mentor");
                 var clientRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Client");
                 var adminRole = await context.Roles.FirstOrDefaultAsync(x => x.Name == "Admin");
+
+                var category = await context.Categories.FirstOrDefaultAsync(x => x.Name == "Web Development");
 
                 var users=new List<AppUser>
                 {
@@ -77,6 +106,7 @@ namespace Persistence
                         UserName="bob",
                         Email="bob@test.com",
                         Bio="I am Bob and I'm a software engineer", 
+                        Category = category,
                         Role=mentorRole
                     },
                     new AppUser{
@@ -84,6 +114,7 @@ namespace Persistence
                         UserName="tom",
                         Email="tom@test.com",
                         Bio="I am Tom and I'm a software engineer",
+                        Category = category,
                         Role=mentorRole
                     },
                     new AppUser{
@@ -91,6 +122,7 @@ namespace Persistence
                         UserName="john",
                         Email="john@test.com",
                         Bio="I am John and I'm a software engineer",
+                        Category = category,
                         Role=mentorRole
                     },
                     new AppUser{
@@ -98,6 +130,7 @@ namespace Persistence
                         UserName="stefan",
                         Email="stefan@test.com",
                         Bio="I am Stefan and I'm a software engineer",
+                        Category = category,
                         Role=clientRole
                     },
                     new AppUser{
@@ -105,6 +138,7 @@ namespace Persistence
                         UserName="miljan",
                         Email="miljan@test.com",
                         Bio="I am Miljan and I'm a software engineer",
+                        Category = category,
                         Role=clientRole
                     },
                     new AppUser{ 
@@ -112,6 +146,7 @@ namespace Persistence
                         UserName="admin",
                         Email="admin@test.com",
                         Bio="I am an admin and I control everything",
+                        Category = category,
                         Role=adminRole
                     }
                 };
@@ -143,36 +178,6 @@ namespace Persistence
                 };
 
                 context.Mentorships.AddRange(mentorships);
-                
-                await context.SaveChangesAsync();
-            }
-
-            if (!context.Categories.Any())
-            {
-                var categories = new List<Category>
-            {
-                new Category
-                {
-                    Name = "Web Development"
-                },
-                new Category
-                {
-                    Name = "Mobile Development"
-                },
-                new Category
-                {
-                    Name = "Game Development"
-                },
-                new Category
-                {
-                    Name = "Blockchain Development"
-                },
-                new Category
-                {
-                    Name = "Data Science/Machine Learning"
-                }
-            };
-                context.Categories.AddRange(categories);
                 
                 await context.SaveChangesAsync();
             }

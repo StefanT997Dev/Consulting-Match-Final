@@ -161,39 +161,6 @@ namespace Persistence.Migrations
                     b.ToTable("CategorySkills");
                 });
 
-            modelBuilder.Entity("Domain.Client", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EnglishLevel")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExpectedSalary")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FieldOfInterest")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TotalBudget")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("Domain.Mentor", b =>
                 {
                     b.Property<int>("Id")
@@ -265,7 +232,13 @@ namespace Persistence.Migrations
                     b.Property<string>("ClientId")
                         .HasColumnType("text");
 
-                    b.Property<int>("NumberOfSessions")
+                    b.Property<DateTime>("NextSessionDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("SessionsDone")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalNumberOfSessions")
                         .HasColumnType("integer");
 
                     b.HasKey("MentorId", "ClientId");

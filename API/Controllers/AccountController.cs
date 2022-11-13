@@ -3,12 +3,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Services;
+using Application.DTOs;
+using Application.Interfaces;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using UserDto = API.DTOs.UserDto;
 
 namespace API.Controllers
 {
@@ -21,16 +24,19 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly TokenService _tokenService;
 		private readonly DataContext _context;
+        private readonly IDataSender _dataSender;
 
-		public AccountController(
+        public AccountController(
             UserManager<AppUser> userManager, 
             SignInManager<AppUser> signInManager,
             TokenService tokenService,
-            DataContext context)
+            DataContext context, 
+            IDataSender dataSender)
         {
             _tokenService = tokenService;
 			_context = context;
-			_signInManager = signInManager;
+            _dataSender = dataSender;
+            _signInManager = signInManager;
             _userManager = userManager;
         }
 
@@ -39,7 +45,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Nismo pronašli email adresu u bazi");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -68,11 +74,10 @@ namespace API.Controllers
         }
 
         [HttpPost("register/client")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            // Email service to send data to my e-mail
-            Console.WriteLine(registerDto.Email);
-            return Ok();
+            await _dataSender.SendDataToGoogleSheetsAsync(registerDto);
+            return Ok(true);
         }
 
 		[HttpPost("register/mentor")]

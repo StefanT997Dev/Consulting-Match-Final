@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -55,12 +56,28 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Mentors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstAndLastName = table.Column<string>(type: "text", nullable: true),
+                    Bio = table.Column<string>(type: "text", nullable: true),
+                    Photo = table.Column<byte[]>(type: "bytea", nullable: true),
+                    Category = table.Column<string>(type: "text", nullable: true),
+                    Skills = table.Column<List<string>>(type: "text[]", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Mentors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: true),
-                    IsMain = table.Column<bool>(type: "boolean", nullable: false)
+                    Url = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,15 +85,16 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skills",
+                name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skills", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,22 +119,20 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Level",
+                name: "Skills",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    LevelNumber = table.Column<int>(type: "integer", nullable: false),
-                    CreditsNeeded = table.Column<int>(type: "integer", nullable: false),
-                    LevelName = table.Column<string>(type: "text", nullable: true),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    MentorId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Level", x => x.Id);
+                    table.PrimaryKey("PK_Skills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Level_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
+                        name: "FK_Skills_Mentors_MentorId",
+                        column: x => x.MentorId,
+                        principalTable: "Mentors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -130,6 +146,10 @@ namespace Persistence.Migrations
                     Bio = table.Column<string>(type: "text", nullable: true),
                     SalesVideo = table.Column<string>(type: "text", nullable: true),
                     ProfilePicture = table.Column<string>(type: "text", nullable: true),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfPackages = table.Column<int>(type: "integer", nullable: false),
+                    PriceRate = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     PhotoId = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -150,19 +170,31 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_AspNetUsers_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_AspNetUsers_Photos_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "Photos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CategorySkills",
                 columns: table => new
                 {
-                    SkillId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SkillId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,55 +209,6 @@ namespace Persistence.Migrations
                         name: "FK_CategorySkills_Skills_SkillId",
                         column: x => x.SkillId,
                         principalTable: "Skills",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserCategories",
-                columns: table => new
-                {
-                    AppUserId = table.Column<string>(type: "text", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserCategories", x => new { x.AppUserId, x.CategoryId });
-                    table.ForeignKey(
-                        name: "FK_AppUserCategories_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppUserCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserLevel",
-                columns: table => new
-                {
-                    AppUserId = table.Column<string>(type: "text", nullable: false),
-                    LevelId = table.Column<Guid>(type: "uuid", nullable: false),
-                    NumberOfCredits = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserLevel", x => new { x.AppUserId, x.LevelId });
-                    table.ForeignKey(
-                        name: "FK_AppUserLevel_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppUserLevel_Level_LevelId",
-                        column: x => x.LevelId,
-                        principalTable: "Level",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -340,41 +323,47 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "Mentorships",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: true),
-                    MentorId = table.Column<string>(type: "text", nullable: true)
+                    MentorId = table.Column<string>(type: "text", nullable: false),
+                    ClientId = table.Column<string>(type: "text", nullable: false),
+                    TotalNumberOfSessions = table.Column<int>(type: "integer", nullable: false),
+                    SessionsDone = table.Column<int>(type: "integer", nullable: false),
+                    NextSessionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.PrimaryKey("PK_Mentorships", x => new { x.MentorId, x.ClientId });
                     table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_MentorId",
+                        name: "FK_Mentorships_AspNetUsers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Mentorships_AspNetUsers_MentorId",
                         column: x => x.MentorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Posts",
+                name: "Packages",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Picture = table.Column<string>(type: "text", nullable: true),
-                    Video = table.Column<string>(type: "text", nullable: true),
-                    NumberOfCredits = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NumberOfSessions = table.Column<int>(type: "integer", nullable: false),
+                    DurationInMonths = table.Column<int>(type: "integer", nullable: false),
                     MentorId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Packages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_MentorId",
+                        name: "FK_Packages_AspNetUsers_MentorId",
                         column: x => x.MentorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -405,67 +394,6 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "UserFollowings",
-                columns: table => new
-                {
-                    ObserverId = table.Column<string>(type: "text", nullable: false),
-                    TargetId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserFollowings", x => new { x.ObserverId, x.TargetId });
-                    table.ForeignKey(
-                        name: "FK_UserFollowings_AspNetUsers_ObserverId",
-                        column: x => x.ObserverId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserFollowings_AspNetUsers_TargetId",
-                        column: x => x.TargetId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Body = table.Column<string>(type: "text", nullable: true),
-                    AuthorId = table.Column<string>(type: "text", nullable: true),
-                    PostId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comments_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUserCategories_CategoryId",
-                table: "AppUserCategories",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUserLevel_LevelId",
-                table: "AppUserLevel",
-                column: "LevelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserSkills_SkillId",
@@ -504,9 +432,19 @@ namespace Persistence.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CategoryId",
+                table: "AspNetUsers",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_PhotoId",
                 table: "AspNetUsers",
                 column: "PhotoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_RoleId",
+                table: "AspNetUsers",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -520,28 +458,13 @@ namespace Persistence.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_AuthorId",
-                table: "Comments",
-                column: "AuthorId");
+                name: "IX_Mentorships_ClientId",
+                table: "Mentorships",
+                column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_PostId",
-                table: "Comments",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Level_CategoryId",
-                table: "Level",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_MentorId",
-                table: "Messages",
-                column: "MentorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_MentorId",
-                table: "Posts",
+                name: "IX_Packages_MentorId",
+                table: "Packages",
                 column: "MentorId");
 
             migrationBuilder.CreateIndex(
@@ -550,19 +473,13 @@ namespace Persistence.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFollowings_TargetId",
-                table: "UserFollowings",
-                column: "TargetId");
+                name: "IX_Skills_MentorId",
+                table: "Skills",
+                column: "MentorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AppUserCategories");
-
-            migrationBuilder.DropTable(
-                name: "AppUserLevel");
-
             migrationBuilder.DropTable(
                 name: "AppUserSkills");
 
@@ -585,22 +502,16 @@ namespace Persistence.Migrations
                 name: "CategorySkills");
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "Mentorships");
+
+            migrationBuilder.DropTable(
+                name: "Packages");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
-
-            migrationBuilder.DropTable(
-                name: "UserFollowings");
-
-            migrationBuilder.DropTable(
-                name: "Level");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -609,16 +520,19 @@ namespace Persistence.Migrations
                 name: "Skills");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Mentors");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Photos");
 
             migrationBuilder.DropTable(
-                name: "Photos");
+                name: "Roles");
         }
     }
 }

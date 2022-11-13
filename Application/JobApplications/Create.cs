@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs;
-using Application.Interfaces;
 using Application.Interfaces.Repositories.JobApplications;
 using MediatR;
 using Persistence;
@@ -19,16 +18,13 @@ namespace Application.JobApplications
 		public class Handler : IRequestHandler<Command, Result<Unit>>
 		{
 			private readonly IJobApplicationRepository _jobApplicationRepository;
-			private readonly IEmailSender _emailSender;
 			private readonly DataContext _context;
 
 			public Handler(
 				IJobApplicationRepository jobApplicationRepository, 
-				IEmailSender emailSender,
 				DataContext context)
 			{
 				_jobApplicationRepository = jobApplicationRepository;
-				_emailSender = emailSender;
 				_context = context;
 			}
 

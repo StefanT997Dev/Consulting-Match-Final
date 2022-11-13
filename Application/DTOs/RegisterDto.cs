@@ -1,7 +1,6 @@
-using Domain;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs
+namespace Application.DTOs
 {
     public class RegisterDto
     {
@@ -14,7 +13,7 @@ namespace API.DTOs
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        public string TotalBudget { get; set; } 
+        public string TotalBudget { get; set; }
         [Required]
         public string FieldOfInterest { get; set; }
         [Required]

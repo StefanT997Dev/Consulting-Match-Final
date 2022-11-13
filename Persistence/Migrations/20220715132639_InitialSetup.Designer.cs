@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220304050900_ModifyMentorEntity")]
-    partial class ModifyMentorEntity
+    [Migration("20220715132639_InitialSetup")]
+    partial class InitialSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,9 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Bio")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -100,6 +103,8 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -158,39 +163,6 @@ namespace Persistence.Migrations
                     b.ToTable("CategorySkills");
                 });
 
-            modelBuilder.Entity("Domain.Client", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EnglishLevel")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExpectedSalary")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FieldOfInterest")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TotalBudget")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("Domain.Mentor", b =>
                 {
                     b.Property<int>("Id")
@@ -204,9 +176,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("FirstAndLastName")
                         .HasColumnType("text");
 
@@ -217,8 +186,6 @@ namespace Persistence.Migrations
                         .HasColumnType("text[]");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Mentors");
                 });
@@ -267,7 +234,13 @@ namespace Persistence.Migrations
                     b.Property<string>("ClientId")
                         .HasColumnType("text");
 
-                    b.Property<int>("NumberOfSessions")
+                    b.Property<DateTime>("NextSessionDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("SessionsDone")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalNumberOfSessions")
                         .HasColumnType("integer");
 
                     b.HasKey("MentorId", "ClientId");
@@ -500,6 +473,12 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
+                    b.HasOne("Domain.Category", "Category")
+                        .WithMany("Mentors")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Photo", "Photo")
                         .WithMany()
                         .HasForeignKey("PhotoId");
@@ -509,6 +488,8 @@ namespace Persistence.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Photo");
 
@@ -551,13 +532,6 @@ namespace Persistence.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Skill");
-                });
-
-            modelBuilder.Entity("Domain.Mentor", b =>
-                {
-                    b.HasOne("Domain.Category", null)
-                        .WithMany("Mentors")
-                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("Domain.Mentorship", b =>

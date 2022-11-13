@@ -23,5 +23,12 @@ namespace API.Controllers
 		{
 			return HandleResult(await Mediator.Send(new ListOfClientsForMentor.Query()));
 		}
+
+		[AllowAnonymous]
+		[HttpGet("get-mentor")]
+		public async Task<IActionResult> GetClientsMentor()
+		{
+			return HandleResult(await Mediator.Send(new ListOfClientsForMentor.Query()));
+		}
 	}
 }

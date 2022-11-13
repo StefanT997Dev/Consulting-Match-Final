@@ -11,6 +11,7 @@ using Application.Core.Wrappers;
 using Domain;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace API.Controllers
 {
@@ -37,6 +38,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMentor(string id)
         {
+            LogAuditEvent();
             return HandleResult(await Mediator.Send(new Details.Query{Id=id}));
         }
 
