@@ -48,7 +48,11 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy",policy=>
                 {
-                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000", "https://it-mentor-ui.herokuapp.com", "http://it-mentor-ui.herokuapp.com");
+                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins(
+                        "http://localhost:3000", 
+                        "https://it-mentor-ui.herokuapp.com", 
+                        "http://it-mentor-ui.herokuapp.com",
+                        "https://keen-almeida-bff700.netlify.app");
                 });
             });
 
