@@ -17,8 +17,8 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { Mentorship = mentorship }));
 		}
 
-		[AllowAnonymous]
-		[HttpGet]
+        [Authorize]
+        [HttpGet("/GetAllClientsOfMentor")]
 		public async Task<IActionResult> GetAllClientsOfMentor()
 		{
 			return HandleResult(await Mediator.Send(new ListOfClientsForMentor.Query()));

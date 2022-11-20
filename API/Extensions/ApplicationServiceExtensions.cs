@@ -8,19 +8,40 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.MongoContext;
 
 namespace API.Extensions
 {
-	public static class ApplicationServiceExtensions
+    public static class ApplicationServiceExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services,IConfiguration config)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.AddSecurityDefinition("token", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
+                    Name = HeaderNames.Authorization,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                });
             });
             services.AddDbContext<DataContext>(options =>
             {
@@ -61,7 +82,7 @@ namespace API.Extensions
 
             services.AddMediatR(typeof(Create.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-            services.AddScoped<IUserAccessor,UserAccessor>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddSignalR();
             services.AddSingleton<IDataSender, GoogleSheetsDataSender>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();

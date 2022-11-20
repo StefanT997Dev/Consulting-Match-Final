@@ -83,15 +83,25 @@ namespace API.Controllers
 		[HttpPost("register/mentor")]
 		public async Task<ActionResult<UserDto>> Register(MentorRegisterDto registerDto)
 		{
-			if (!await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+			if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
 			{
 				return BadRequest("Email je zauzet");
 			}
 
-			var user = new AppUser
+            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName))
+            {
+                return BadRequest("Korisničko ime je zauzeto");
+            }
+
+            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Name == registerDto.CategoryName);
+
+            var user = new AppUser
 			{
-				Email = registerDto.Email
-			};
+				Email = registerDto.Email,
+                UserName = registerDto.UserName,
+                Category = category,
+                RoleId = 3
+            };
 
 			using (var transaction = await _context.Database.BeginTransactionAsync())
 			{

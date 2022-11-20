@@ -297,7 +297,56 @@ namespace Persistence
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.CategorySkills.Any())
+            {
+                var category = await context.Categories.FirstOrDefaultAsync(x=> x.Name =="Web Development");
+                var skill1 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "C#");
+                var skill2 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "Java");
+                var skill3 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "PHP");
+                var skill4 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "WEB Api");
+                var skill5 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "Angular");
+                var skill6 = await context.Skills.FirstOrDefaultAsync(x => x.Name == "Javascript");
+
+                var categorySkills = new List<CategorySkill>
+                {
+                    new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill1.Id
+                    },
+                    new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill2.Id
+                    },
+                    new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill3.Id
+                    },
+                    new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill4.Id
+                    },
+                    new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill5.Id
+                    },
+                     new CategorySkill
+                    {
+                        CategoryId = category.Id,
+                        SkillId = skill6.Id
+                    }
+                };
+
+                context.CategorySkills.AddRange(categorySkills);
+
                 await context.SaveChangesAsync();
+            }
+            await context.SaveChangesAsync();
         }
     }
 }
