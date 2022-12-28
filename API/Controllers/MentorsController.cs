@@ -30,7 +30,6 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMentorsPaginated([FromQuery] FilterDto filter)
         {
-            _logger.LogInformation("Starting to fetch paginated list");
             return HandlePagedListResult(await Mediator.Send(new PaginatedList.Query{ Filter = filter }));
         }
 

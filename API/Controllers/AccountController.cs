@@ -94,13 +94,14 @@ namespace API.Controllers
             }
 
             var category = await _context.Categories.FirstOrDefaultAsync(x => x.Name == registerDto.CategoryName);
+            var mentorRole = await _context.Roles.FirstOrDefaultAsync(x => x.Name == "Mentor");
 
             var user = new AppUser
 			{
 				Email = registerDto.Email,
                 UserName = registerDto.UserName,
                 Category = category,
-                RoleId = 3
+                Role = mentorRole
             };
 
 			using (var transaction = await _context.Database.BeginTransactionAsync())
